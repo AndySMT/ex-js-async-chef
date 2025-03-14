@@ -18,27 +18,43 @@ async function getChefBirthday(id) {
     if (!dataRicetta.ok)
       throw new Error("Errore nella richiesta per la ricetta");
     const ricetta = await dataRicetta.json();
-    /*     console.log(ricetta);
-     */ const idChef = ricetta.userId;
-    /*     console.log(idChef);
-     */ const userData = await fetch(`https://dummyjson.com/users/${idChef}`);
+    /* console.log(ricetta); */
+    const idChef = ricetta.userId;
+    /* console.log(idChef); */
+    const userData = await fetch(`https://dummyjson.com/users/${idChef}`);
     const chef = await userData.json();
-    /*     console.log(chef);
-     */ const birth = chef.birthDate;
+    /* console.log(chef); */
+    const birth = chef.birthDate;
     const formattedBirth = dayjs(birth).format("DD/MM/YYYY");
+    console.log("La data di nascita dello chef e:", formattedBirth);
     return formattedBirth;
-    /*     console.log("La data di nascita dello chef e:", birth);
-     */
   } catch (error) {
     throw error;
   } finally {
-    console.log("Chiamate effettuate");
+    /* console.log("Chiamate effettuate"); */
   }
 }
 
 getChefBirthday(4)
-  .then((birth) => console.log("Data di nascita dello chef:", birth))
+  .then((birth) =>
+    console.log("Data di nascita dello chef dentro il then:", birth)
+  )
   .catch((error) => console.error("Errore:", error.message));
+
+async function ciao(id) {
+  await getChefBirthday(id);
+}
+ciao(2);
+
+// IIFE
+(async () => {
+  try {
+    const birth = await getChefBirthday(34);
+    console.log("Data di nascita dello chef con l IIFE:", birth);
+  } catch (error) {
+    console.error("Errore:", error.message);
+  }
+})();
 
 /*   🎯 Bonus 1
 Attualmente, se la prima richiesta non trova una ricetta, la seconda richiesta potrebbe comunque essere eseguita causando errori a cascata.
